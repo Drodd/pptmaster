@@ -23,6 +23,13 @@
       color: #111;
       -webkit-tap-highlight-color: transparent;
     }
+    /* 禁止页面元素被选中 */
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
     #viewport {
       position: fixed;
       inset: 0;
