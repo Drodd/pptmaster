@@ -91,7 +91,29 @@
     .legend { font-size: 14px; fill: #4b5563; }
     .label { font-size: 16px; fill: #111827; font-weight: 700; }
     .value { font-size: 14px; fill: #6b7280; }
-    .draggable { cursor: grab; touch-action: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    .draggable { cursor: grab; touch-action: manipulation; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: auto; }
+    .bar-visual { pointer-events: none; }
+    .node-visual { pointer-events: none; }
+    .pie-handle { pointer-events: none; }
+    
+    /* 触摸反馈样式 */
+    .draggable:active {
+      cursor: grabbing;
+    }
+    
+    /* 触摸区域高亮 */
+    .draggable:hover {
+      opacity: 0.8;
+    }
+    
+    /* 触摸增强样式 */
+    .touch-highlight {
+      transition: all 0.2s ease;
+    }
+    
+    .touch-highlight:active {
+      transform: scale(1.1);
+    }
 
     /* 阻止 iOS/安卓下拉刷新：在根节点捕获 touchmove 并禁止默认 */
     
@@ -597,6 +619,15 @@
       lv.bars.forEach((b, i) => {
         const x = gap + i * (barW + gap);
         const barGroup = create(g, 'g', {});
+        // 创建更大的触摸区域
+        const touchArea = create(barGroup, 'rect', {
+          x: x - 10,
+          y: 0,
+          width: barW + 20,
+          height: H,
+          fill: 'transparent',
+          class: 'draggable'
+        });
         const rect = create(barGroup, 'rect', {
           x,
           y: baseY - visualHeights[i],
@@ -604,7 +635,7 @@
           height: visualHeights[i],
           fill: b.color,
           rx: 8,
-          class: 'draggable'
+          class: 'bar-visual'
         });
         const label = create(barGroup, 'text', { x: x + barW/2, y: baseY + 22, 'text-anchor': 'middle', class: 'legend' });
         label.textContent = b.label;
@@ -615,14 +646,16 @@
           e.preventDefault();
           e.stopPropagation();
           dragging = i; 
-          if (e.pointerId !== undefined) rect.setPointerCapture(e.pointerId);
-          rect.style.cursor = 'grabbing';
+          if (e.pointerId !== undefined) touchArea.setPointerCapture(e.pointerId);
+          rect.style.transform = 'scale(1.05)';
+          rect.style.transformOrigin = 'center bottom';
+          rect.style.transition = 'transform 0.1s';
         };
         const endHandler = (e) => { 
           e.preventDefault();
           e.stopPropagation();
           dragging = null; 
-          rect.style.cursor = 'grab';
+          rect.style.transform = 'scale(1)';
         };
         const moveHandler = (e) => {
           if (dragging !== i) return;
@@ -638,22 +671,22 @@
         };
         
         // 支持鼠标事件
-        rect.addEventListener('mousedown', startHandler);
-        rect.addEventListener('mouseup', endHandler);
-        rect.addEventListener('mouseleave', endHandler);
-        rect.addEventListener('mousemove', moveHandler);
+        touchArea.addEventListener('mousedown', startHandler);
+        touchArea.addEventListener('mouseup', endHandler);
+        touchArea.addEventListener('mouseleave', endHandler);
+        touchArea.addEventListener('mousemove', moveHandler);
         
         // 支持指针事件
-        rect.addEventListener('pointerdown', startHandler);
-        rect.addEventListener('pointerup', endHandler);
-        rect.addEventListener('pointercancel', endHandler);
-        rect.addEventListener('pointermove', moveHandler);
+        touchArea.addEventListener('pointerdown', startHandler);
+        touchArea.addEventListener('pointerup', endHandler);
+        touchArea.addEventListener('pointercancel', endHandler);
+        touchArea.addEventListener('pointermove', moveHandler);
         
         // 支持触摸事件
-        rect.addEventListener('touchstart', startHandler, { passive: false });
-        rect.addEventListener('touchend', endHandler);
-        rect.addEventListener('touchcancel', endHandler);
-        rect.addEventListener('touchmove', moveHandler, { passive: false });
+        touchArea.addEventListener('touchstart', startHandler, { passive: false });
+        touchArea.addEventListener('touchend', endHandler);
+        touchArea.addEventListener('touchcancel', endHandler);
+        touchArea.addEventListener('touchmove', moveHandler, { passive: false });
       });
     }
 
@@ -718,19 +751,39 @@
 
       let dragging = -1;
       vPoints.forEach((p, i) => {
-        const c = create(g, 'circle', { cx: p.x, cy: p.y, r: 8, fill: '#2563eb', class: 'draggable' });
+        // 创建更大的触摸区域（透明大圆）
+        const touchArea = create(g, 'circle', { 
+          cx: p.x, 
+          cy: p.y, 
+          r: 25, // 触摸区域半径
+          fill: 'transparent', 
+          class: 'draggable' 
+        });
+        // 创建可见小圆
+        const c = create(g, 'circle', { 
+          cx: p.x, 
+          cy: p.y, 
+          r: 8, 
+          fill: '#2563eb', 
+          stroke: '#fff', 
+          'stroke-width': 2,
+          class: 'node-visual' 
+        });
+        
         const startHandler = (e) => { 
           e.preventDefault();
           e.stopPropagation();
           dragging = i; 
-          if (e.pointerId !== undefined) c.setPointerCapture(e.pointerId);
+          if (e.pointerId !== undefined) touchArea.setPointerCapture(e.pointerId);
           c.setAttribute('r', 12); // 触摸反馈
+          c.setAttribute('stroke-width', 3);
         };
         const endHandler = (e) => { 
           e.preventDefault();
           e.stopPropagation();
           dragging = -1; 
           c.setAttribute('r', 8);
+          c.setAttribute('stroke-width', 2);
         };
         const moveHandler = (e) => {
           if (dragging !== i) return;
@@ -739,28 +792,30 @@
           const pt = localPoint(svg, e);
           const local = { x: clamp(pt.x - 20, X0, X0 + chartW), y: clamp(pt.y - 60, T, Y0) };
           p.y = local.y;
+          // 同时更新触摸区域和可见圆的位置
           c.setAttribute('cy', p.y);
+          touchArea.setAttribute('cy', p.y);
           path.setAttribute('points', pointsStr(vPoints));
           checkLineGoal(lv.goal, vPoints) && successFlash(svg);
         };
         
         // 支持鼠标事件
-        c.addEventListener('mousedown', startHandler);
-        c.addEventListener('mouseup', endHandler);
-        c.addEventListener('mouseleave', endHandler);
-        c.addEventListener('mousemove', moveHandler);
+        touchArea.addEventListener('mousedown', startHandler);
+        touchArea.addEventListener('mouseup', endHandler);
+        touchArea.addEventListener('mouseleave', endHandler);
+        touchArea.addEventListener('mousemove', moveHandler);
         
         // 支持指针事件
-        c.addEventListener('pointerdown', startHandler);
-        c.addEventListener('pointerup', endHandler);
-        c.addEventListener('pointercancel', endHandler);
-        c.addEventListener('pointermove', moveHandler);
+        touchArea.addEventListener('pointerdown', startHandler);
+        touchArea.addEventListener('pointerup', endHandler);
+        touchArea.addEventListener('pointercancel', endHandler);
+        touchArea.addEventListener('pointermove', moveHandler);
         
         // 支持触摸事件
-        c.addEventListener('touchstart', startHandler, { passive: false });
-        c.addEventListener('touchend', endHandler);
-        c.addEventListener('touchcancel', endHandler);
-        c.addEventListener('touchmove', moveHandler, { passive: false });
+        touchArea.addEventListener('touchstart', startHandler, { passive: false });
+        touchArea.addEventListener('touchend', endHandler);
+        touchArea.addEventListener('touchcancel', endHandler);
+        touchArea.addEventListener('touchmove', moveHandler, { passive: false });
       });
     }
 
@@ -802,7 +857,10 @@
       create(g, 'circle', { cx:0, cy:0, r:R+20, fill:'#f8fafc', stroke:'#e5e7eb' });
       const paths = slices.map(()=> create(g,'path', { stroke:'#fff', 'stroke-width':2 }));
       const labels = slices.map(()=> create(g,'text', { class:'label' }));
-      const handles = bounds.map(()=> create(g,'circle', { r:10, fill:'#111827', opacity:0.25, class:'draggable' }));
+      // 创建更大的触摸区域（透明大圆）
+      const touchAreas = bounds.map(()=> create(g,'circle', { r:30, fill:'transparent', class:'draggable' }));
+      // 创建可见控制点
+      const handles = bounds.map(()=> create(g,'circle', { r:12, fill:'#111827', stroke:'#fff', 'stroke-width':2, opacity:0.5, class:'pie-handle' }));
 
       const TWO = Math.PI*2;
       const norm = (a)=>{ const t=a%TWO; return t<0?t+TWO:t; };
@@ -840,8 +898,12 @@
         // 把手（含缝合处 index=0）
         for(let k=0;k<handles.length;k++){
           const a=bounds[k];
-          handles[k].setAttribute('cx', Math.cos(a)*R);
-          handles[k].setAttribute('cy', Math.sin(a)*R);
+          const x = Math.cos(a)*R;
+          const y = Math.sin(a)*R;
+          handles[k].setAttribute('cx', x);
+          handles[k].setAttribute('cy', y);
+          touchAreas[k].setAttribute('cx', x);
+          touchAreas[k].setAttribute('cy', y);
         }
       }
 
@@ -860,21 +922,23 @@
       }
 
       let active=-1;
-      handles.forEach((h, idx)=>{
+      touchAreas.forEach((touchArea, idx)=>{
         const startHandler = (e) => { 
           e.preventDefault();
           e.stopPropagation();
           active = idx; 
-          if (e.pointerId !== undefined) h.setPointerCapture(e.pointerId);
-          h.setAttribute('r', 14); // 触摸反馈
-          h.setAttribute('opacity', 0.6);
+          if (e.pointerId !== undefined) touchArea.setPointerCapture(e.pointerId);
+          handles[idx].setAttribute('r', 18); // 触摸反馈
+          handles[idx].setAttribute('opacity', 0.8);
+          handles[idx].setAttribute('stroke-width', 3);
         };
         const endHandler = (e) => { 
           e.preventDefault();
           e.stopPropagation();
           active = -1; 
-          h.setAttribute('r', 10);
-          h.setAttribute('opacity', 0.25);
+          handles[idx].setAttribute('r', 12);
+          handles[idx].setAttribute('opacity', 0.5);
+          handles[idx].setAttribute('stroke-width', 2);
         };
         const moveHandler = (e) => {
           if(active !== idx) return;
@@ -891,22 +955,22 @@
         };
         
         // 支持鼠标事件
-        h.addEventListener('mousedown', startHandler);
-        h.addEventListener('mouseup', endHandler);
-        h.addEventListener('mouseleave', endHandler);
-        h.addEventListener('mousemove', moveHandler);
+        touchArea.addEventListener('mousedown', startHandler);
+        touchArea.addEventListener('mouseup', endHandler);
+        touchArea.addEventListener('mouseleave', endHandler);
+        touchArea.addEventListener('mousemove', moveHandler);
         
         // 支持指针事件
-        h.addEventListener('pointerdown', startHandler);
-        h.addEventListener('pointerup', endHandler);
-        h.addEventListener('pointercancel', endHandler);
-        h.addEventListener('pointermove', moveHandler);
+        touchArea.addEventListener('pointerdown', startHandler);
+        touchArea.addEventListener('pointerup', endHandler);
+        touchArea.addEventListener('pointercancel', endHandler);
+        touchArea.addEventListener('pointermove', moveHandler);
         
         // 支持触摸事件
-        h.addEventListener('touchstart', startHandler, { passive: false });
-        h.addEventListener('touchend', endHandler);
-        h.addEventListener('touchcancel', endHandler);
-        h.addEventListener('touchmove', moveHandler, { passive: false });
+        touchArea.addEventListener('touchstart', startHandler, { passive: false });
+        touchArea.addEventListener('touchend', endHandler);
+        touchArea.addEventListener('touchcancel', endHandler);
+        touchArea.addEventListener('touchmove', moveHandler, { passive: false });
       });
 
       update();
