@@ -570,13 +570,15 @@
         const value = create(barGroup, 'text', { x: x + barW/2, y: baseY + 40, 'text-anchor': 'middle', class: 'value' });
         value.textContent = `${b.value}`;
 
-        rect.addEventListener('pointerdown', (e) => {
-          dragging = i; rect.setPointerCapture(e.pointerId);
-        });
-        rect.addEventListener('pointerup', () => dragging = null);
-        rect.addEventListener('pointercancel', () => dragging = null);
-        rect.addEventListener('pointermove', (e) => {
+        const startHandler = (e) => { 
+          e.preventDefault();
+          dragging = i; 
+          if (e.pointerId !== undefined) rect.setPointerCapture(e.pointerId);
+        };
+        const endHandler = () => dragging = null;
+        const moveHandler = (e) => {
           if (dragging !== i) return;
+          e.preventDefault();
           const pt = localPoint(svg, e);
           const localY = pt.y - 60; // 减去 translate
           const h = clamp(baseY - localY, 20, maxVisual);
@@ -584,7 +586,16 @@
           rect.setAttribute('y', baseY - h);
           rect.setAttribute('height', h);
           checkBarGoal(lv.goal, visualHeights) && successFlash(svg);
-        });
+        };
+        rect.addEventListener('pointerdown', startHandler);
+        rect.addEventListener('pointerup', endHandler);
+        rect.addEventListener('pointercancel', endHandler);
+        rect.addEventListener('pointermove', moveHandler);
+        // 移动端 touch 事件
+        rect.addEventListener('touchstart', startHandler, { passive: false });
+        rect.addEventListener('touchend', endHandler);
+        rect.addEventListener('touchcancel', endHandler);
+        rect.addEventListener('touchmove', moveHandler, { passive: false });
       });
     }
 
@@ -650,18 +661,32 @@
       let dragging = -1;
       vPoints.forEach((p, i) => {
         const c = create(g, 'circle', { cx: p.x, cy: p.y, r: 8, fill: '#2563eb', class: 'draggable' });
-        c.addEventListener('pointerdown', (e) => { dragging = i; c.setPointerCapture(e.pointerId); });
-        c.addEventListener('pointerup', () => dragging = -1);
-        c.addEventListener('pointercancel', () => dragging = -1);
-        c.addEventListener('pointermove', (e) => {
+        // 兼容移动端：同时监听 pointer 和 touch 事件
+        const startHandler = (e) => { 
+          e.preventDefault();
+          dragging = i; 
+          if (e.pointerId !== undefined) c.setPointerCapture(e.pointerId);
+        };
+        const endHandler = () => dragging = -1;
+        const moveHandler = (e) => {
           if (dragging !== i) return;
+          e.preventDefault();
           const pt = localPoint(svg, e);
           const local = { x: clamp(pt.x - 20, X0, X0 + chartW), y: clamp(pt.y - 60, T, Y0) };
           p.y = local.y;
           c.setAttribute('cy', p.y);
           path.setAttribute('points', pointsStr(vPoints));
           checkLineGoal(lv.goal, vPoints) && successFlash(svg);
-        });
+        };
+        c.addEventListener('pointerdown', startHandler);
+        c.addEventListener('pointerup', endHandler);
+        c.addEventListener('pointercancel', endHandler);
+        c.addEventListener('pointermove', moveHandler);
+        // 移动端 touch 事件
+        c.addEventListener('touchstart', startHandler, { passive: false });
+        c.addEventListener('touchend', endHandler);
+        c.addEventListener('touchcancel', endHandler);
+        c.addEventListener('touchmove', moveHandler, { passive: false });
       });
     }
 
@@ -762,18 +787,33 @@
 
       let active=-1;
       handles.forEach((h, idx)=>{
-        h.addEventListener('pointerdown', (e)=>{ h.setPointerCapture(e.pointerId); active=idx; });
-        h.addEventListener('pointerup', ()=> active=-1);
-        h.addEventListener('pointercancel', ()=> active=-1);
-        h.addEventListener('pointermove', (e)=>{
-          if(active!==idx) return;
-          const pt=localPoint(svg,e); const x=pt.x-330, y=pt.y-380;
-          let a=Math.atan2(y,x); if(a<0) a+=TWO;
-          clampAround(idx,a);
+        const startHandler = (e) => { 
+          e.preventDefault();
+          active = idx; 
+          if (e.pointerId !== undefined) h.setPointerCapture(e.pointerId);
+        };
+        const endHandler = () => active = -1;
+        const moveHandler = (e) => {
+          if(active !== idx) return;
+          e.preventDefault();
+          const pt = localPoint(svg, e); 
+          const x = pt.x - 330, y = pt.y - 380;
+          let a = Math.atan2(y, x); 
+          if(a < 0) a += TWO;
+          clampAround(idx, a);
           update();
           const angs = boundsToAngles(bounds);
           checkPieGoal(lv.goal, angs) && successFlash(svg);
-        });
+        };
+        h.addEventListener('pointerdown', startHandler);
+        h.addEventListener('pointerup', endHandler);
+        h.addEventListener('pointercancel', endHandler);
+        h.addEventListener('pointermove', moveHandler);
+        // 移动端 touch 事件
+        h.addEventListener('touchstart', startHandler, { passive: false });
+        h.addEventListener('touchend', endHandler);
+        h.addEventListener('touchcancel', endHandler);
+        h.addEventListener('touchmove', moveHandler, { passive: false });
       });
 
       update();
