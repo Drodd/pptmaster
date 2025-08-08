@@ -91,7 +91,7 @@
     .legend { font-size: 14px; fill: #4b5563; }
     .label { font-size: 16px; fill: #111827; font-weight: 700; }
     .value { font-size: 14px; fill: #6b7280; }
-    .draggable { cursor: grab; touch-action: none; }
+    .draggable { cursor: grab; touch-action: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
     /* 阻止 iOS/安卓下拉刷新：在根节点捕获 touchmove 并禁止默认 */
   </style>
@@ -853,7 +853,20 @@
 
     function localPoint(svg, evt) {
       const pt = svg.createSVGPoint();
-      pt.x = evt.clientX; pt.y = evt.clientY;
+      // 处理触摸事件和鼠标事件的坐标差异
+      if (evt.touches && evt.touches.length > 0) {
+        // 触摸事件
+        pt.x = evt.touches[0].clientX;
+        pt.y = evt.touches[0].clientY;
+      } else if (evt.changedTouches && evt.changedTouches.length > 0) {
+        // 触摸结束事件
+        pt.x = evt.changedTouches[0].clientX;
+        pt.y = evt.changedTouches[0].clientY;
+      } else {
+        // 鼠标或指针事件
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+      }
       const m = svg.getScreenCTM().inverse();
       const res = pt.matrixTransform(m);
       return { x: res.x, y: res.y };
