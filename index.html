@@ -54,13 +54,24 @@
       transform-origin: center center;
     }
     /* 顶部 HUD：进度条 */
-    .hud { position: absolute; top: 0; left: 0; right: 0; height: 100px; display: flex; align-items: center; justify-content: center; }
-    .progress { position: relative; width: 640px; height: 20px; background: rgba(255,255,255,0.15); border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.35); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); }
-    .progress .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #f43f5e 0%, #fb7185 50%, #fda4af 100%); transition: width .2s linear; }
-    .progress .text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #e2e8f0; text-shadow: 0 1px 2px rgba(0,0,0,0.6); letter-spacing: 1px; }
+    .hud { position: absolute; top: 0; left: 0; right: 0; height: 120px; display: flex; align-items: center; justify-content: center; }
+    .progress { position: relative; width: 680px; height: 28px; background: rgba(255,255,255,0.2); border-radius: 14px; overflow: hidden; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); }
+    .progress .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #ff4757 0%, #ff6b7a 25%, #ff8a9b 50%, #ff6b7a 75%, #ff4757 100%); background-size: 200% 100%; animation: pulseBar 2s ease-in-out infinite; transition: width .2s ease-out; }
+    @keyframes pulseBar {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .progress .text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 2px; font-size: 16px; }
+    .progress.danger .bar { background: linear-gradient(90deg, #ff3838 0%, #ff4757 50%, #ff3838 100%); animation: dangerPulse 0.8s ease-in-out infinite; }
+    @keyframes dangerPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
     .bg-wrap { position: absolute; left: 40px; right: 40px; bottom: 36px; height: var(--bg-h); z-index: 1; }
     .bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); background:#e5e7eb; }
-    .boss-speech { position: absolute; left: 16px; right: 16px; top: 12px; background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); padding: 12px 14px; min-height: 64px; font-size: 18px; line-height: 1.35; display: flex; align-items: center; border-left: 6px solid var(--brand); z-index: 2; }
+    .boss-speech { position: absolute; left: 16px; right: 16px; top: 12px; background: #fff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 20px 24px; min-height: 80px; font-size: 20px; line-height: 1.4; display: flex; align-items: center; border-left: 8px solid var(--brand); z-index: 2; transform: translateY(0) scale(1); opacity: 1; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .boss-speech.slide-out { transform: translateY(-20px) scale(0.95); opacity: 0; }
+    .boss-speech.slide-in { transform: translateY(0) scale(1); opacity: 1; transition-delay: 0.2s; }
     /* PPT 画布 */
     .slide {
       position: absolute;
@@ -80,12 +91,17 @@
     .hint { position: absolute; bottom: 8px; left: 12px; right: 12px; text-align: center; font-size: 14px; color: #6b7280; }
     .overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(3,7,18,0.55); color: #fff; flex-direction: column; gap: 24px; border-radius: 18px; z-index: 20; backdrop-filter: blur(6px); }
     .overlay.show { display: flex; }
-    .panel { width: 88%; max-width: 640px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.22); box-shadow: 0 24px 70px rgba(0,0,0,0.55); border-radius: 18px; padding: 28px; text-align: center; }
-    .panel h1 { margin: 0 0 10px 0; font-size: 34px; font-weight: 900; letter-spacing: 1px; color: #ffffff; }
-    .panel p { margin: 8px 0; color: #e5e7eb; font-size: 18px; line-height: 1.7; }
-    .panel ul { display: inline-block; text-align: left; margin: 12px auto 18px auto; line-height: 1.9; font-size: 18px; color: #e5e7eb; }
-    .panel li { margin: 2px 0; }
-    .btn { background: var(--brand); color: #fff; border: none; border-radius: 12px; padding: 12px 18px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(244,63,94,0.35); }
+    .panel { width: 92%; max-width: 680px; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 32px 80px rgba(0,0,0,0.4); border-radius: 24px; padding: 48px 40px; text-align: center; transform: scale(0.9); opacity: 0; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    @keyframes popIn {
+      to { transform: scale(1); opacity: 1; }
+    }
+    .panel h1 { margin: 0 0 20px 0; font-size: 48px; font-weight: 900; letter-spacing: -1px; color: #1f2937; line-height: 1.1; }
+    .panel p { margin: 16px 0; color: #4b5563; font-size: 24px; line-height: 1.6; font-weight: 500; }
+    .panel ul { display: inline-block; text-align: left; margin: 24px auto 32px auto; line-height: 1.8; font-size: 20px; color: #374151; }
+    .panel li { margin: 8px 0; }
+    .btn { background: linear-gradient(135deg, #ff4d6d, #f87171); color: #fff; border: none; border-radius: 16px; padding: 18px 32px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(244,63,94,0.4); transition: all 0.3s ease; transform: translateY(0); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(244,63,94,0.5); }
+    .btn:active { transform: translateY(0); box-shadow: 0 8px 20px rgba(244,63,94,0.3); }
     .btn.secondary { background: #0ea5e9; box-shadow: 0 10px 24px rgba(14,165,233,0.35); }
     .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.5); color: #fff; }
     .legend { font-size: 14px; fill: #4b5563; }
@@ -233,186 +249,170 @@
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const rad = (deg) => deg * Math.PI / 180;
     const deg = (radVal) => radVal * 180 / Math.PI;
+    
+    // 动效工具
+    function animateBossSpeech(text) {
+      const boss = document.getElementById('boss');
+      boss.classList.add('slide-out');
+      setTimeout(() => {
+        boss.textContent = '“' + text + '”';
+        boss.classList.remove('slide-out');
+        boss.classList.add('slide-in');
+        setTimeout(() => boss.classList.remove('slide-in'), 300);
+      }, 300);
+    }
+    
+    // 增强倒计时进度条动效
+    function updateProgressBar(timeLeft) {
+      const progress = document.querySelector('.progress');
+      const bar = document.querySelector('.progress .bar');
+      const percentage = (timeLeft / 60) * 100;
+      
+      // 移除所有状态类
+      progress.classList.remove('danger');
+      
+      if (timeLeft <= 10) {
+        progress.classList.add('danger');
+      }
+      
+      bar.style.width = `${Math.max(0, percentage)}%`;
+    }
 
-    // 关卡定义（扩充至 30 关）
+    // 关卡定义
     const LEVELS = [
       {
         type: 'bar',
         title: '模型对比',
-        boss: '我们的新模型全面领先竞品，树立行业新标杆。',
+        boss: '兄弟们，这新模型简直吊打全场，跟开挂似的！',
         hint: '',
         bars: [
-          { label: 'GPT-5', value: 52.8, color: '#ff69b4' },
-          { label: 'OpenAI o3', value: 69.1, color: '#a7f3d0' },
-          { label: 'GPT-4o', value: 30.8, color: '#bfdbfe' },
+          { label: 'CPT-5', value: 40, color: '#ff69b4' },
+          { label: 'OpenAL o3', value: 65, color: '#a7f3d0' },
+          { label: 'CPT-4o', value: 35, color: '#bfdbfe' },
         ],
         goal: { kind: 'barLargest', index: 0 }
       },
       // 扩展关卡开始
-      { type:'bar', title:'活跃度环比', boss:'社区活跃度显著提升，讨论氛围持续高涨。', hint:'', bars:[
-        {label:'一月', value: 32, color:'#f9a8d4'},
-        {label:'二月', value: 46, color:'#86efac'},
-        {label:'三月', value: 20, color:'#93c5fd'},
-      ], goal:{ kind:'barLargest', index:1 } },
+      { type:'bar', title:'活跃度环比', boss:'社区活跃度火得不行！', hint:'', bars:[
+        {label:'一月', value: 30, color:'#f9a8d4'},
+        {label:'二月', value: 25, color:'#86efac'},
+        {label:'三月', value: 35, color:'#93c5fd'},
+      ], goal:{ kind:'barIncreasing', index:1 } },
 
-      { type:'line', title:'留存趋势', boss:'产品粘性增强，次日留存稳步走高。', hint:'', points:[30,29,33,35], labels:['W1','W2','W3','W4'], goal:{ kind:'lineEndAboveStart', margin: 10 } },
+      { type:'line', title:'留存趋势', boss:'产品粘性变态，用户跟粘了502似的！', hint:'', points:[35,33,29,25], labels:['W1','W2','W3','W4'], goal:{ kind:'lineEndAboveStart', margin: 10 } },
 
-      { type:'pie', title:'终端分布', boss:'多端协同顺畅，移动端贡献亮眼。', hint:'', slices:[
-        {label:'移动', value: 48, color:'#34d399'},
-        {label:'PC', value: 42, color:'#60a5fa'},
-        {label:'平板', value: 10, color:'#fde68a'},
+      { type:'pie', title:'终端分布', boss:'移动端杀疯了，数据爆炸！', hint:'', slices:[
+        {label:'移动', value: 20, color:'#34d399'},
+        {label:'PC', value: 60, color:'#60a5fa'},
+        {label:'平板', value: 20, color:'#fde68a'},
       ], goal:{ kind:'pieIndexAtLeast', index:0, fraction: 0.5 } },
 
-      { type:'bar', title:'渠道转化', boss:'重点渠道深耕，头部渠道转化占优。', hint:'', bars:[
-        {label:'广告', value: 12, color:'#f472b6'},
-        {label:'自然', value: 28, color:'#a7f3d0'},
-        {label:'内容', value: 16, color:'#fca5a5'},
-        {label:'联运', value: 22, color:'#c4b5fd'},
+      { type:'bar', title:'渠道转化', boss:'渠道转化离谱，头部直接起飞！', hint:'', bars:[
+        {label:'广告', value: 25, color:'#f472b6'},
+        {label:'自然', value: 20, color:'#a7f3d0'},
+        {label:'内容', value: 15, color:'#fca5a5'},
+        {label:'联运', value: 30, color:'#c4b5fd'},
       ], goal:{ kind:'barLargest', index:1 } },
 
-      { type:'line', title:'性能基准(帧率)', boss:'高帧稳定，体验顺滑。', hint:'', points:[50,55,57,60], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndAboveStart', margin: 6 } },
+      { type:'line', title:'性能基准(帧率)', boss:'帧率稳得一批！', hint:'', points:[50,55,52,48], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndAboveStart', margin: 6 } },
 
-      { type:'pie', title:'地区营收', boss:'海外市场持续突破，多区域齐头并进。', hint:'', slices:[
-        {label:'北美', value: 22, color:'#93c5fd'},
-        {label:'欧洲', value: 25, color:'#c4b5fd'},
-        {label:'亚太', value: 53, color:'#86efac'},
+      { type:'pie', title:'地区营收', boss:'海外营收开挂，全球都在爆！', hint:'', slices:[
+        {label:'北美', value: 25, color:'#93c5fd'},
+        {label:'欧洲', value: 35, color:'#c4b5fd'},
+        {label:'亚太', value: 40, color:'#86efac'},
       ], goal:{ kind:'pieLargest', index:2 } },
 
-      { type:'bar', title:'研发投入', boss:'持续加码研发，投入力度行业领先。', hint:'', bars:[
-        {label:'21', value: 80, color:'#34d399'},
+      { type:'bar', title:'研发投入', boss:'研发投入土豪，业内横着走！', hint:'', bars:[
+        {label:'21', value: 110, color:'#34d399'},
         {label:'22', value: 100, color:'#60a5fa'},
-        {label:'23', value: 110, color:'#fbbf24'},
-        {label:'24', value: 95, color:'#f472b6'},
+        {label:'23', value: 95, color:'#fbbf24'},
+        {label:'24', value: 80, color:'#f472b6'},
       ], goal:{ kind:'barIncreasing' } },
 
-      { type:'line', title:'客服响应时长', boss:'服务效率全面优化，响应更迅速。', hint:'', points:[30,28,25,18], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 8 } },
+      { type:'line', title:'客服响应时长', boss:'客服响应快得飞起，用户都惊了！', hint:'', points:[30,28,25,22], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 8 } },
 
-      { type:'pie', title:'功能使用占比', boss:'核心功能高频使用，价值凸显。', hint:'', slices:[
-        {label:'核心A', value: 25, color:'#34d399'},
+      { type:'pie', title:'功能使用占比', boss:'核心功能使用率逆天，用户爱不释手！', hint:'', slices:[
+        {label:'核心A', value: 15, color:'#34d399'},
         {label:'核心B', value: 20, color:'#60a5fa'},
-        {label:'长尾', value: 55, color:'#e5e7eb'},
+        {label:'长尾', value: 65, color:'#e5e7eb'},
       ], goal:{ kind:'pieIndexAtLeast', index:0, fraction:0.45 } },
 
-      { type:'bar', title:'人均产能', boss:'人均效率提升，团队战斗力更强。', hint:'', bars:[
-        {label:'Q1', value: 8, color:'#86efac'},
-        {label:'Q2', value: 10, color:'#93c5fd'},
-        {label:'Q3', value: 12, color:'#fca5a5'},
-        {label:'Q4', value: 9, color:'#f9a8d4'},
-      ], goal:{ kind:'barLastMultipleFirst', multiple: 1.3 } },
+      { type:'line', title:'下载时长(秒)', boss:'下载光速，用户都惊呆了！', hint:'', points:[20,18,16,12], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndBelowStart', margin: 6 } },
 
-      { type:'line', title:'MAU与版本迭代', boss:'小步快跑，持续迭代带动活跃提升。', hint:'', points:[100,105,103,120], labels:['r1','r2','r3','r4'], goal:{ kind:'lineEndAboveStart', margin: 10 } },
-
-      { type:'pie', title:'团队职能占比', boss:'组织结构更精干，核心团队占比较高。', hint:'', slices:[
-        {label:'研发', value: 40, color:'#60a5fa'},
-        {label:'产品', value: 20, color:'#fbbf24'},
-        {label:'运营', value: 40, color:'#34d399'},
-      ], goal:{ kind:'pieSumAtLeast', indices:[0,1], fraction:0.7 } },
-
-      { type:'bar', title:'站内搜索使用', boss:'搜索体验升级，使用频率增长。', hint:'', bars:[
-        {label:'周一', value: 30, color:'#93c5fd'},
-        {label:'周二', value: 28, color:'#c4b5fd'},
-        {label:'周三', value: 32, color:'#86efac'},
-        {label:'周四', value: 27, color:'#fca5a5'},
-        {label:'周五', value: 35, color:'#f9a8d4'},
-      ], goal:{ kind:'barLargest', index:4 } },
-
-      { type:'line', title:'下载时长(秒)', boss:'下载提速显著，体验更顺滑。', hint:'', points:[20,18,16,12], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndBelowStart', margin: 6 } },
-
-      { type:'pie', title:'投诉类型占比', boss:'问题分类更集中，优化更高效。', hint:'', slices:[
+      { type:'pie', title:'投诉类型占比', boss:'问题分类精准打击，优化效率爆表！', hint:'', slices:[
         {label:'性能', value: 35, color:'#fca5a5'},
         {label:'体验', value: 30, color:'#fbbf24'},
         {label:'其他', value: 35, color:'#e5e7eb'},
       ], goal:{ kind:'pieLargest', index:0 } },
 
-      { type:'bar', title:'活跃地理热度', boss:'重点城市渗透率持续提升。', hint:'', bars:[
+      { type:'bar', title:'活跃地理热度', boss:'城市渗透病毒式传播，火遍全国！', hint:'', bars:[
         {label:'一线', value: 70, color:'#60a5fa'},
         {label:'二线', value: 60, color:'#34d399'},
         {label:'三线', value: 40, color:'#fbbf24'},
       ], goal:{ kind:'barIncreasing' } },
 
-      { type:'line', title:'错误率(%)', boss:'稳定性显著提升，错误率逐季改善。', hint:'', points:[2.5,2.3,2.2,1.2], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 0.8 } },
+      { type:'line', title:'错误率(%)', boss:'稳定性变态，错误率都快归零了！', hint:'', points:[2.5,2.3,2.2,1.2], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 0.8 } },
 
-      { type:'pie', title:'人群年龄分布', boss:'年轻用户占比提升，品牌更具活力。', hint:'', slices:[
+      { type:'pie', title:'人群年龄分布', boss:'年轻用户蜂拥而至，品牌逆龄生长！', hint:'', slices:[
         {label:'18-24', value: 22, color:'#93c5fd'},
         {label:'25-34', value: 48, color:'#60a5fa'},
         {label:'35+', value: 30, color:'#c4b5fd'},
       ], goal:{ kind:'pieLargest', index:1 } },
 
-      { type:'bar', title:'客服满意度', boss:'服务满意度提升，五星好评不断。', hint:'', bars:[
+      { type:'bar', title:'客服满意度', boss:'客服满意度爆表，五星刷到手软！', hint:'', bars:[
         {label:'差评', value: 5, color:'#fca5a5'},
         {label:'一般', value: 15, color:'#fbbf24'},
         {label:'满意', value: 35, color:'#86efac'},
         {label:'很满意', value: 45, color:'#34d399'},
       ], goal:{ kind:'barLargest', index:3 } },
 
-      { type:'line', title:'活跃时段', boss:'黄金时段活跃更高，内容曝光更充分。', hint:'', points:[20,30,25,35], labels:['上午','下午','傍晚','夜间'], goal:{ kind:'lineEndAboveStart', margin: 8 } },
+      { type:'line', title:'活跃时段', boss:'黄金时段活跃开挂，内容曝光炸屏！', hint:'', points:[20,30,25,35], labels:['上午','下午','傍晚','夜间'], goal:{ kind:'lineEndAboveStart', margin: 8 } },
 
-      { type:'pie', title:'订阅套餐占比', boss:'高阶套餐更受欢迎，ARPU 提升明显。', hint:'', slices:[
+      { type:'pie', title:'订阅套餐占比', boss:'高阶套餐卖疯了，ARPU直接起飞！', hint:'', slices:[
         {label:'基础', value: 50, color:'#e5e7eb'},
         {label:'进阶', value: 30, color:'#60a5fa'},
         {label:'旗舰', value: 20, color:'#34d399'},
       ], goal:{ kind:'pieIndexAtLeast', index:2, fraction:0.35 } },
 
-      { type:'bar', title:'站点可用率(%)', boss:'全年稳定在线，用户体验可靠放心。', hint:'', bars:[
+      { type:'bar', title:'站点可用率(%)', boss:'在线率变态，全年不掉线！', hint:'', bars:[
         {label:'Q1', value: 99.0, color:'#86efac'},
         {label:'Q2', value: 99.3, color:'#93c5fd'},
         {label:'Q3', value: 99.6, color:'#fbbf24'},
         {label:'Q4', value: 99.1, color:'#f472b6'},
       ], goal:{ kind:'barIncreasing' } },
 
-      { type:'line', title:'付费转化(%)', boss:'转化率稳步提升，变现效率更高。', hint:'', points:[2.1,2.2,2.0,2.8], labels:['M1','M2','M3','M4'], goal:{ kind:'lineEndAboveStart', margin: 0.5 } },
+      { type:'line', title:'付费转化(%)', boss:'转化率火箭升空，变现效率爆表！', hint:'', points:[2.1,2.2,2.0,2.8], labels:['M1','M2','M3','M4'], goal:{ kind:'lineEndAboveStart', margin: 0.5 } },
 
-      { type:'pie', title:'内容题材热度', boss:'热点聚焦，优质题材备受青睐。', hint:'', slices:[
+      { type:'pie', title:'内容题材热度', boss:'热点自带流量，优质内容被疯抢！', hint:'', slices:[
         {label:'科技', value: 28, color:'#60a5fa'},
         {label:'生活', value: 40, color:'#34d399'},
         {label:'娱乐', value: 32, color:'#fbbf24'},
       ], goal:{ kind:'pieLargest', index:1 } },
 
-      { type:'bar', title:'测试通过率(%)', boss:'自动化覆盖更高，回归更高效。', hint:'', bars:[
-        {label:'模块A', value: 70, color:'#93c5fd'},
-        {label:'模块B', value: 85, color:'#86efac'},
-        {label:'模块C', value: 60, color:'#fca5a5'},
-        {label:'模块D', value: 90, color:'#34d399'},
-      ], goal:{ kind:'barLargest', index:3 } },
+      { type:'line', title:'学习曲线', boss:'上手难度幼儿园级别，用户秒变老司机！', hint:'', points:[80,70,60,40], labels:['D1','D2','D3','D4'], goal:{ kind:'lineEndBelowStart', margin: 20 } },
 
-      { type:'line', title:'学习曲线', boss:'上手更轻松，学习成本更低。', hint:'', points:[80,70,60,40], labels:['D1','D2','D3','D4'], goal:{ kind:'lineEndBelowStart', margin: 20 } },
-
-      { type:'pie', title:'运营成本结构', boss:'结构更健康，关键环节更精益。', hint:'', slices:[
-        {label:'人力', value: 45, color:'#f472b6'},
-        {label:'渠道', value: 35, color:'#60a5fa'},
-        {label:'其他', value: 20, color:'#e5e7eb'},
-      ], goal:{ kind:'pieSumAtLeast', indices:[0,1], fraction:0.75 } },
-
-      { type:'bar', title:'线索到签约', boss:'销售漏斗通畅，转化环节更顺滑。', hint:'', bars:[
+      { type:'bar', title:'线索到签约', boss:'销售简直印钞机，转化率爆表！', hint:'', bars:[
         {label:'线索', value: 300, color:'#60a5fa'},
         {label:'商机', value: 120, color:'#fbbf24'},
         {label:'签约', value: 40, color:'#34d399'},
       ], goal:{ kind:'barLastMultipleFirst', multiple: 0.5 } },
-
-      { type:'line', title:'活跃设备数', boss:'多设备协同使用更普遍。', hint:'', points:[20,24,23,28], labels:['W1','W2','W3','W4'], goal:{ kind:'lineEndAboveStart', margin: 4 } },
-
-      { type:'pie', title:'邮件类型占比', boss:'信息触达更精准，订阅邮件更受欢迎。', hint:'', slices:[
-        {label:'通知', value: 25, color:'#93c5fd'},
-        {label:'营销', value: 50, color:'#f472b6'},
-        {label:'系统', value: 25, color:'#e5e7eb'},
-      ], goal:{ kind:'pieLargest', index:1 } },
       {
         type: 'line',
         title: '月活趋势',
-        boss: '我们的用户增长强劲，月活一路走高。',
+        boss: '月活一路狂飙不带停的！',
         hint: '',
-        points: [120, 100, 80, 70],
+        points: [120, 100, 80, 75],
         labels: ['Q1','Q2','Q3','Q4'],
         goal: { kind: 'lineEndAboveStart', margin: 40 }
       },
       {
         type: 'pie',
         title: '市场份额',
-        boss: '我们已坐稳市场主导地位，占比优势明显。',
+        boss: '市场这地位无敌，吊打友商十条街！',
         hint: '',
         slices: [
-          { label: '本公司', value: 30, color: '#60a5fa' },
-          { label: '竞品A', value: 50, color: '#fca5a5' },
+          { label: '本公司', value: 20, color: '#60a5fa' },
+          { label: '竞品A', value: 60, color: '#fca5a5' },
           { label: '竞品B', value: 20, color: '#fde68a' }
         ],
         goal: { kind: 'pieIndexAtLeast', index: 0, fraction: 0.6 }
@@ -420,82 +420,39 @@
       {
         type: 'bar',
         title: '季度利润（万元）',
-        boss: '利润稳步增长，经营基本面持续向好。',
+        boss: '利润爆表，数钱数到手抽筋！',
         hint: '',
         bars: [
           { label: 'Q1', value: -30, color: '#c4b5fd' },
-          { label: 'Q2', value: -25, color: '#93c5fd' },
-          { label: 'Q3', value: -15, color: '#86efac' },
-          { label: 'Q4', value: -10, color: '#fca5a5' },
+          { label: 'Q2', value: -35, color: '#93c5fd' },
+          { label: 'Q3', value: -25, color: '#86efac' },
+          { label: 'Q4', value: -15, color: '#fca5a5' },
         ],
         goal: { kind: 'barIncreasing' }
       },
       {
-        type: 'line',
-        title: '缺陷数',
-        boss: '产品质量持续提升，缺陷数量稳步下降。',
-        hint: '',
-        points: [12, 11, 10, 13],
-        labels: ['1周','2周','3周','4周'],
-        goal: { kind: 'lineEndBelowStart', margin: 20 }
-      },
-      {
         type: 'pie',
         title: '满意度调查',
-        boss: '客户口碑卓越，满意度接近九成。',
+        boss: '口碑炸裂，用户都成自来水了！',
         hint: '',
         slices: [
-          { label: '很满意', value: 18, color: '#34d399' },
-          { label: '满意', value: 37, color: '#6ee7b7' },
-          { label: '其他', value: 45, color: '#e5e7eb' },
+          { label: '很满意', value: 15, color: '#34d399' },
+          { label: '满意', value: 30, color: '#6ee7b7' },
+          { label: '其他', value: 55, color: '#e5e7eb' },
         ],
         goal: { kind: 'pieSumAtLeast', indices: [0,1], fraction: 0.9 }
       },
       {
-        type: 'bar',
-        title: '营收同比增长率',
-        boss: '营收强劲增长，我们在关键赛道实现数倍扩张。',
-        hint: '',
-        bars: [
-          { label: 'Q1', value: -12, color: '#fcd34d' },
-          { label: 'Q2', value: -8, color: '#fdba74' },
-          { label: 'Q3', value: -5, color: '#fca5a5' },
-          { label: 'Q4', value: -2, color: '#fecaca' },
-        ],
-        goal: { kind: 'barLastMultipleFirst', multiple: 3 }
-      },
-      {
-        type: 'line',
-        title: '接口延迟(ms)',
-        boss: '系统性能显著提升，响应延迟全面优化。',
-        hint: '',
-        points: [400, 380, 420, 410],
-        labels: ['v1','v2','v3','v4'],
-        goal: { kind: 'lineEndBelowRatio', ratio: 0.5 }
-      },
-      {
         type: 'pie',
         title: '转化来源占比',
-        boss: '增长引擎表现突出，广告渠道贡献卓著。',
+        boss: '广告渠道简直是金矿，流量哗哗的！',
         hint: '',
         slices: [
-          { label: '广告', value: 10, color: '#f472b6' },
-          { label: '自然', value: 70, color: '#93c5fd' },
+          { label: '广告', value: 15, color: '#f472b6' },
+          { label: '自然', value: 65, color: '#93c5fd' },
           { label: '推荐', value: 20, color: '#fde68a' },
         ],
         goal: { kind: 'pieLargest', index: 0 }
-      },
-      {
-        type: 'bar',
-        title: 'NPS 对比',
-        boss: '我们的口碑遥遥领先，用户更愿意推荐。',
-        hint: '',
-        bars: [
-          { label: '我司', value: 3.1, color: '#34d399' },
-          { label: '友商A', value: 4.6, color: '#60a5fa' },
-          { label: '友商B', value: 4.2, color: '#fca5a5' },
-        ],
-        goal: { kind: 'barLargest', index: 0 }
       },
     ];
 
@@ -505,6 +462,7 @@
     let levelCleared = false; // 防止同一关卡多次计数
     let timeLeft = 60;
     let timerId = null;
+    let isTransitioning = false; // 防止快速拖拽导致重复计数
 
     const els = {
       timebar: document.getElementById('timebar'),
@@ -529,7 +487,7 @@
       score = 0; current = 0; timeLeft = 60;
       els.page.textContent = `已完成 ${score} 页`;
       els.timetext.textContent = `${timeLeft}s`;
-      els.timebar.style.width = '100%';
+      updateProgressBar(timeLeft);
       els.over.classList.remove('show');
       els.start.classList.remove('show');
       renderLevel();
@@ -537,7 +495,7 @@
       timerId = setInterval(() => {
         timeLeft -= 1;
         els.timetext.textContent = `${timeLeft}s`;
-        els.timebar.style.width = `${Math.max(0, (timeLeft/60)*100)}%`;
+        updateProgressBar(timeLeft);
         if (timeLeft <= 0) {
           clearInterval(timerId);
           timerId = null;
@@ -546,10 +504,56 @@
       }, 1000);
     }
 
+    // 段位系统
+    const TITLES = [
+      { min: 0, max: 5, name: '职场小白', icon: '🌱', color: '#9ca3af', desc: '初入职场，还需努力！' },
+      { min: 6, max: 10, name: '数据学徒', icon: '📊', color: '#60a5fa', desc: '开始掌握数据魔法！' },
+      { min: 11, max: 15, name: '图表能手', icon: '📈', color: '#34d399', desc: '图表操作行云流水！' },
+      { min: 16, max: 20, name: '视觉大师', icon: '🎨', color: '#fbbf24', desc: '视觉呈现出神入化！' },
+      { min: 21, max: 25, name: '吹牛专家', icon: '💼', color: '#f472b6', desc: '老板最爱的PPT大师！' },
+      { min: 26, max: 30, name: '数据影帝', icon: '👑', color: '#8b5cf6', desc: '登峰造极，数据界的奥斯卡！' }
+    ];
+    
+    function getTitle(score) {
+      return TITLES.find(t => score >= t.min && score <= t.max) || TITLES[0];
+    }
+    
     function gameOver() {
       const best = Math.max(score, parseInt(localStorage.getItem('bestScore')||'0',10));
       localStorage.setItem('bestScore', best.toString());
-      els.final.textContent = `你在 60 秒内共完成 ${score} 页吹牛PPT。历史最佳：${best} 页。`;
+      
+      const currentTitle = getTitle(score);
+      const bestTitle = getTitle(best);
+      
+      // 构建成就展示HTML
+      const achievementHTML = `
+        <div style="text-align: center; margin: 24px 0;">
+          <div style="font-size: 64px; margin-bottom: 16px;">${currentTitle.icon}</div>
+          <div style="font-size: 28px; font-weight: 900; color: ${currentTitle.color}; margin-bottom: 8px;">
+            ${currentTitle.name}
+          </div>
+          <div style="font-size: 18px; color: #6b7280; margin-bottom: 24px;">
+            ${currentTitle.desc}
+          </div>
+          <div style="display: flex; justify-content: space-around; margin: 32px 0; text-align: center;">
+            <div>
+              <div style="font-size: 36px; font-weight: 900; color: ${currentTitle.color};">${score}</div>
+              <div style="font-size: 16px; color: #6b7280;">本次成绩</div>
+            </div>
+            <div>
+              <div style="font-size: 36px; font-weight: 900; color: ${bestTitle.color};">${best}</div>
+              <div style="font-size: 16px; color: #6b7280;">历史最佳</div>
+            </div>
+          </div>
+          ${score === best && score > 0 ? `
+            <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 12px 24px; border-radius: 20px; font-weight: 900; margin: 16px 0; display: inline-block;">
+              🎉 创造新纪录！
+            </div>
+          ` : ''}
+        </div>
+      `;
+      
+      els.final.innerHTML = achievementHTML;
       els.over.classList.add('show');
     }
     els.restart.addEventListener('click', start);
@@ -562,16 +566,32 @@
     });
 
     function nextLevel() {
+      if (isTransitioning) return; // 防止重复计数
+      isTransitioning = true;
+      
       score += 1;
       els.page.textContent = `已完成 ${score} 页`;
       current = (current + 1) % LEVELS.length;
-      setTimeout(renderLevel, 600);
+      
+      // 添加完成动效
+      const svg = els.chart;
+      successFlash(svg);
+      
+      setTimeout(() => {
+        renderLevel();
+        isTransitioning = false; // 重置状态
+      }, 400);
     }
 
     function renderLevel() {
       const lv = LEVELS[current];
-      levelCleared = false;
-      els.boss.textContent = '“' + lv.boss + '”';
+      const svg = els.chart;
+      svg.innerHTML = '';
+      
+      // 使用动画更新老板对话
+      animateBossSpeech(lv.boss);
+      
+      // 重置状态
       els.title.textContent = lv.title;
       if (els.subtitle1) {
         els.subtitle1.textContent = lv.sub1 || '副标题一：真实数据仅作示意，请通过拖拽调整图形外观。';
@@ -580,11 +600,10 @@
         els.subtitle2.textContent = lv.sub2 || '副标题二：完成老板目标即可进入下一页。';
       }
       // 通用操作提示：依据图表类型
-      // 提示弱化：只给出交互存在，不告诉具体该如何调整
       const hints = { bar: '提示：图表可交互', line: '提示：图表可交互', pie: '提示：图表可交互' };
       els.hint.textContent = lv.hint || hints[lv.type] || '';
-      const svg = els.chart;
-      svg.innerHTML = '';
+      
+      // 为每个图表创建独立作用域，避免状态污染
       if (lv.type === 'bar') renderBar(lv, svg);
       else if (lv.type === 'line') renderLine(lv, svg);
       else if (lv.type === 'pie') renderPie(lv, svg);
@@ -656,6 +675,12 @@
           e.stopPropagation();
           dragging = null; 
           rect.style.transform = 'scale(1)';
+          // 拖拽结束时检查通关条件，延迟执行避免状态冲突
+          setTimeout(() => {
+            if (!isTransitioning && checkBarGoal(lv.goal, visualHeights)) {
+              nextLevel();
+            }
+          }, 50);
         };
         const moveHandler = (e) => {
           if (dragging !== i) return;
@@ -667,7 +692,7 @@
           visualHeights[i] = h;
           rect.setAttribute('y', baseY - h);
           rect.setAttribute('height', h);
-          checkBarGoal(lv.goal, visualHeights) && successFlash(svg);
+          checkBarGoal(lv.goal, visualHeights);
         };
         
         // 支持鼠标事件
@@ -696,21 +721,17 @@
       switch(goal.kind) {
         case 'barLargest': {
           const idx = goal.index;
-          const ok = heights.every((h, i) => i === idx || heights[idx] >= h + minGap);
-          if (ok && !levelCleared) { levelCleared = true; nextLevel(); }
-          return ok;
+          return heights.every((h, i) => i === idx || heights[idx] >= h + minGap);
         }
         case 'barIncreasing': {
           for (let i = 0; i < heights.length - 1; i++) {
             if (!(heights[i] + minGap < heights[i+1])) return false;
           }
-          if (!levelCleared) { levelCleared = true; nextLevel(); }
           return true;
         }
         case 'barLastMultipleFirst': {
           const m = goal.multiple || 2;
-          if (heights[heights.length - 1] >= heights[0] * m) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return heights[heights.length - 1] >= heights[0] * m;
         }
       }
       return false;
@@ -784,6 +805,12 @@
           dragging = -1; 
           c.setAttribute('r', 8);
           c.setAttribute('stroke-width', 2);
+          // 拖拽结束时检查通关条件，延迟执行避免状态冲突
+          setTimeout(() => {
+            if (!isTransitioning && checkLineGoal(lv.goal, vPoints)) {
+              nextLevel();
+            }
+          }, 50);
         };
         const moveHandler = (e) => {
           if (dragging !== i) return;
@@ -796,7 +823,7 @@
           c.setAttribute('cy', p.y);
           touchArea.setAttribute('cy', p.y);
           path.setAttribute('points', pointsStr(vPoints));
-          checkLineGoal(lv.goal, vPoints) && successFlash(svg);
+          checkLineGoal(lv.goal, vPoints);
         };
         
         // 支持鼠标事件
@@ -825,19 +852,16 @@
       const startY = pts[0].y, endY = pts[pts.length - 1].y;
       switch(goal.kind) {
         case 'lineEndAboveStart': {
-          if (startY - endY > (goal.margin || 20)) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return startY - endY > (goal.margin || 20);
         }
         case 'lineEndBelowStart': {
-          if (endY - startY > (goal.margin || 20)) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return endY - startY > (goal.margin || 20);
         }
         case 'lineEndBelowRatio': {
           // 这里用 Y 轴朝下：越大越低。目标：end <= start * ratio（视觉显著降低）
           // 换成像素差判定：start - end >= (1-ratio) * 200 像素
           const need = 160 * (1 - (goal.ratio || 0.5));
-          if (startY - endY >= need) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return startY - endY >= need;
         }
       }
       return false;
@@ -939,6 +963,13 @@
           handles[idx].setAttribute('r', 12);
           handles[idx].setAttribute('opacity', 0.5);
           handles[idx].setAttribute('stroke-width', 2);
+          // 拖拽结束时检查通关条件，延迟执行避免状态冲突
+          setTimeout(() => {
+            const angs = boundsToAngles(bounds);
+            if (!isTransitioning && checkPieGoal(lv.goal, angs)) {
+              nextLevel();
+            }
+          }, 50);
         };
         const moveHandler = (e) => {
           if(active !== idx) return;
@@ -951,7 +982,7 @@
           clampAround(idx, a);
           update();
           const angs = boundsToAngles(bounds);
-          checkPieGoal(lv.goal, angs) && successFlash(svg);
+          checkPieGoal(lv.goal, angs);
         };
         
         // 支持鼠标事件
@@ -982,19 +1013,15 @@
       for (let i=0;i<angles.length-1;i++) fracs.push((angles[i+1]-angles[i])/(2*Math.PI));
       switch(goal.kind) {
         case 'pieIndexAtLeast': {
-          if (fracs[goal.index] >= goal.fraction) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return fracs[goal.index] >= goal.fraction;
         }
         case 'pieSumAtLeast': {
           const sum = goal.indices.reduce((s,i)=>s+fracs[i],0);
-          if (sum >= goal.fraction) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return sum >= goal.fraction;
         }
         case 'pieLargest': {
           const idx = goal.index;
-          const ok = fracs.every((f,i)=> i===idx || fracs[idx] > f + 0.02);
-          if (ok) { if (!levelCleared){ levelCleared = true; nextLevel(); } return true; }
-          return false;
+          return fracs.every((f,i)=> i===idx || fracs[idx] > f + 0.02);
         }
       }
       return false;
@@ -1009,37 +1036,64 @@
     }
 
     function localPoint(svg, evt) {
-      const pt = svg.createSVGPoint();
-      // 处理触摸事件和鼠标事件的坐标差异
+      // 获取事件坐标
+      let clientX, clientY;
       if (evt.touches && evt.touches.length > 0) {
-        // 触摸事件
-        pt.x = evt.touches[0].clientX;
-        pt.y = evt.touches[0].clientY;
+        clientX = evt.touches[0].clientX;
+        clientY = evt.touches[0].clientY;
       } else if (evt.changedTouches && evt.changedTouches.length > 0) {
-        // 触摸结束事件
-        pt.x = evt.changedTouches[0].clientX;
-        pt.y = evt.changedTouches[0].clientY;
+        clientX = evt.changedTouches[0].clientX;
+        clientY = evt.changedTouches[0].clientY;
       } else {
-        // 鼠标或指针事件
-        pt.x = evt.clientX;
-        pt.y = evt.clientY;
+        clientX = evt.clientX;
+        clientY = evt.clientY;
       }
-      const m = svg.getScreenCTM().inverse();
-      const res = pt.matrixTransform(m);
-      return { x: res.x, y: res.y };
+      
+      // 获取SVG元素的位置和尺寸
+      const svgRect = svg.getBoundingClientRect();
+      
+      // 计算相对于SVG的坐标
+      const x = clientX - svgRect.left;
+      const y = clientY - svgRect.top;
+      
+      // 考虑SVG的viewBox缩放
+      const viewBox = svg.viewBox.baseVal;
+      const scaleX = viewBox.width / svgRect.width;
+      const scaleY = viewBox.height / svgRect.height;
+      
+      // 转换为SVG坐标系
+      const svgX = x * scaleX + viewBox.x;
+      const svgY = y * scaleY + viewBox.y;
+      
+      return { x: svgX, y: svgY };
     }
 
     function successFlash(svg) {
-      // 简单的通过动效 & 进入下一关
+      // 增强的成功动效
       const overlay = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       overlay.setAttribute('x', '0');
       overlay.setAttribute('y', '0');
       overlay.setAttribute('width', '660');
       overlay.setAttribute('height', '900');
       overlay.setAttribute('fill', '#34d399');
-      overlay.setAttribute('opacity', '0.15');
+      overlay.setAttribute('opacity', '0');
+      overlay.style.animation = 'successFlash 0.6s ease-out';
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes successFlash {
+          0% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 0.3; transform: scale(1.1); }
+          100% { opacity: 0; transform: scale(1); }
+        }
+      `;
+      document.head.appendChild(style);
+      
       svg.appendChild(overlay);
-      setTimeout(() => { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 200);
+      setTimeout(() => {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        if (style.parentNode) style.parentNode.removeChild(style);
+      }, 600);
     }
 
     // 启动：显示开始界面
