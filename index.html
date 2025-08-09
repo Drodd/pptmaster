@@ -187,26 +187,25 @@
 
       <div class="overlay" id="gameover">
         <div class="panel">
-          <h1>时间到！</h1>
+          <h1>发布会结束！</h1>
           <p id="final">-</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
             <button class="btn" id="restart">再来一局</button>
-            <button class="btn ghost" id="backHome">返回标题</button>
           </div>
         </div>
       </div>
 
       <div class="overlay show" id="startscreen">
         <div class="panel">
-          <h1>吹牛PPT大师</h1>
-          <p>60 秒内尽可能多地完成老板的“视觉优化”任务。</p>
+          <h1>我在发布会现场改PPT</h1>
+          <p>光速修改ppt，支撑老板在发布会现场的发言！</p>
           <ul>
             <li>柱状图：拖拽柱顶改变高度</li>
             <li>折线图：拖拽节点改变形状</li>
             <li>饼图：拖拽分割线改变占比</li>
           </ul>
           <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-            <button class="btn" id="startBtn">开始吹牛</button>
+            <button class="btn" id="startBtn">发布会开始</button>
           </div>
           <p id="bestInfo" style="margin-top:12px;font-size:16px;opacity:.9;"></p>
         </div>
@@ -283,90 +282,73 @@
       {
         type: 'bar',
         title: '模型对比',
-        boss: '兄弟们，这新模型简直吊打全场，跟开挂似的！',
+        boss: '我们的新模型实现了质的飞跃！',
         hint: '',
         bars: [
-          { label: 'CPT-5', value: 40, color: '#ff69b4' },
-          { label: 'OpenAL o3', value: 65, color: '#a7f3d0' },
-          { label: 'CPT-4o', value: 35, color: '#bfdbfe' },
+          { label: 'CPT-5', value: 52.8, color: '#ff69b4' },
+          { label: 'OpenAL o3', value: 69.1, color: '#a7f3d0' },
+          { label: 'CPT-4o', value: 30.8, color: '#bfdbfe' },
         ],
         goal: { kind: 'barLargest', index: 0 }
       },
       // 扩展关卡开始
-      { type:'bar', title:'活跃度环比', boss:'社区活跃度火得不行！', hint:'', bars:[
+      { type:'bar', title:'活跃度环比', boss:'社区活跃度屡创新高！', hint:'', bars:[
         {label:'一月', value: 30, color:'#f9a8d4'},
         {label:'二月', value: 25, color:'#86efac'},
         {label:'三月', value: 35, color:'#93c5fd'},
       ], goal:{ kind:'barIncreasing', index:1 } },
 
-      { type:'line', title:'留存趋势', boss:'产品粘性变态，用户跟粘了502似的！', hint:'', points:[35,33,29,25], labels:['W1','W2','W3','W4'], goal:{ kind:'lineEndAboveStart', margin: 10 } },
+      { type:'line', title:'留存趋势', boss:'产品粘性历史新高！', hint:'', points:[35,33,29,25], labels:['W1','W2','W3','W4'], goal:{ kind:'lineEndAboveStart', margin: 10 } },
 
-      { type:'pie', title:'终端分布', boss:'移动端杀疯了，数据爆炸！', hint:'', slices:[
+      { type:'pie', title:'终端分布', boss:'移动端数据爆炸！', hint:'', slices:[
         {label:'移动', value: 20, color:'#34d399'},
         {label:'PC', value: 60, color:'#60a5fa'},
         {label:'平板', value: 20, color:'#fde68a'},
       ], goal:{ kind:'pieIndexAtLeast', index:0, fraction: 0.5 } },
 
-      { type:'bar', title:'渠道转化', boss:'渠道转化离谱，头部直接起飞！', hint:'', bars:[
-        {label:'广告', value: 25, color:'#f472b6'},
-        {label:'自然', value: 20, color:'#a7f3d0'},
+      { type:'bar', title:'渠道转化', boss:'自然流量高到离谱！', hint:'', bars:[
+        {label:'广告', value: 40, color:'#f472b6'},
+        {label:'自然', value: 5, color:'#a7f3d0'},
         {label:'内容', value: 15, color:'#fca5a5'},
         {label:'联运', value: 30, color:'#c4b5fd'},
       ], goal:{ kind:'barLargest', index:1 } },
 
-      { type:'line', title:'性能基准(帧率)', boss:'帧率稳得一批！', hint:'', points:[50,55,52,48], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndAboveStart', margin: 6 } },
-
-      { type:'pie', title:'地区营收', boss:'海外营收开挂，全球都在爆！', hint:'', slices:[
-        {label:'北美', value: 25, color:'#93c5fd'},
-        {label:'欧洲', value: 35, color:'#c4b5fd'},
-        {label:'亚太', value: 40, color:'#86efac'},
-      ], goal:{ kind:'pieLargest', index:2 } },
-
-      { type:'bar', title:'研发投入', boss:'研发投入土豪，业内横着走！', hint:'', bars:[
-        {label:'21', value: 110, color:'#34d399'},
-        {label:'22', value: 100, color:'#60a5fa'},
-        {label:'23', value: 95, color:'#fbbf24'},
-        {label:'24', value: 80, color:'#f472b6'},
-      ], goal:{ kind:'barIncreasing' } },
-
-      { type:'line', title:'客服响应时长', boss:'客服响应快得飞起，用户都惊了！', hint:'', points:[30,28,25,22], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 8 } },
-
-      { type:'pie', title:'功能使用占比', boss:'核心功能使用率逆天，用户爱不释手！', hint:'', slices:[
-        {label:'核心A', value: 15, color:'#34d399'},
-        {label:'核心B', value: 20, color:'#60a5fa'},
-        {label:'长尾', value: 65, color:'#e5e7eb'},
-      ], goal:{ kind:'pieIndexAtLeast', index:0, fraction:0.45 } },
-
-      { type:'line', title:'下载时长(秒)', boss:'下载光速，用户都惊呆了！', hint:'', points:[20,18,16,12], labels:['v1','v2','v3','v4'], goal:{ kind:'lineEndBelowStart', margin: 6 } },
-
-      { type:'pie', title:'投诉类型占比', boss:'问题分类精准打击，优化效率爆表！', hint:'', slices:[
-        {label:'性能', value: 35, color:'#fca5a5'},
-        {label:'体验', value: 30, color:'#fbbf24'},
-        {label:'其他', value: 35, color:'#e5e7eb'},
-      ], goal:{ kind:'pieLargest', index:0 } },
-
-      { type:'bar', title:'活跃地理热度', boss:'城市渗透病毒式传播，火遍全国！', hint:'', bars:[
-        {label:'一线', value: 70, color:'#60a5fa'},
-        {label:'二线', value: 60, color:'#34d399'},
-        {label:'三线', value: 40, color:'#fbbf24'},
-      ], goal:{ kind:'barIncreasing' } },
-
-      { type:'line', title:'错误率(%)', boss:'稳定性变态，错误率都快归零了！', hint:'', points:[2.5,2.3,2.2,1.2], labels:['Q1','Q2','Q3','Q4'], goal:{ kind:'lineEndBelowStart', margin: 0.8 } },
-
-      { type:'pie', title:'人群年龄分布', boss:'年轻用户蜂拥而至，品牌逆龄生长！', hint:'', slices:[
-        {label:'18-24', value: 22, color:'#93c5fd'},
-        {label:'25-34', value: 48, color:'#60a5fa'},
-        {label:'35+', value: 30, color:'#c4b5fd'},
+      { type:'pie', title:'地区营收', boss:'全球营收遥遥领先！', hint:'', slices:[
+        {label:'全球', value: 5, color:'#93c5fd'},
+        {label:'火星', value: 85, color:'#c4b5fd'},
+        {label:'月球', value: 10, color:'#86efac'},
       ], goal:{ kind:'pieLargest', index:1 } },
 
-      { type:'bar', title:'客服满意度', boss:'客服满意度爆表，五星刷到手软！', hint:'', bars:[
-        {label:'差评', value: 5, color:'#fca5a5'},
-        {label:'一般', value: 15, color:'#fbbf24'},
-        {label:'满意', value: 35, color:'#86efac'},
-        {label:'很满意', value: 45, color:'#34d399'},
-      ], goal:{ kind:'barLargest', index:3 } },
+      { type:'bar', title:'研发投入', boss:'我们信心十足，不断加大研发投入！', hint:'', bars:[
+        {label:'21', value: 100, color:'#34d399'},
+        {label:'22', value: 50, color:'#60a5fa'},
+        {label:'23', value: 15, color:'#fbbf24'},
+        {label:'24', value: 5, color:'#f472b6'},
+      ], goal:{ kind:'barIncreasing' } },
 
-      { type:'line', title:'活跃时段', boss:'黄金时段活跃开挂，内容曝光炸屏！', hint:'', points:[20,30,25,35], labels:['上午','下午','傍晚','夜间'], goal:{ kind:'lineEndAboveStart', margin: 8 } },
+      { type:'pie', title:'功能使用占比', boss:'用户需求定位准确，核心功能使用率逆天！', hint:'', slices:[
+        {label:'核心', value: 15, color:'#34d399'},
+        {label:'外围', value: 20, color:'#60a5fa'},
+        {label:'福利', value: 65, color:'#e5e7eb'},
+      ], goal:{ kind:'pieIndexAtLeast', index:0, fraction:0.45 } },
+
+      { type:'bar', title:'活跃地理热度', boss:'我们的产品深受高净值人群喜爱！', hint:'', bars:[
+        {label:'一线', value: 10, color:'#60a5fa'},
+        {label:'二线', value: 20, color:'#34d399'},
+        {label:'三线', value: 80, color:'#fbbf24'},
+      ], goal:{ kind:'barLargest' } },
+
+      { type:'pie', title:'人群年龄分布', boss:'年轻用户占比很高，产品未来想象空间巨大！', hint:'', slices:[
+        {label:'18-24', value: 12, color:'#93c5fd'},
+        {label:'25-34', value: 48, color:'#60a5fa'},
+        {label:'35+', value: 40, color:'#c4b5fd'},
+      ], goal:{ kind:'pieLargest', index:0 } },
+
+      { type:'bar', title:'客服满意度', boss:'客服满意度爆表，五星刷到手软！', hint:'', bars:[
+        {label:'差评', value: 75, color:'#fca5a5'},
+        {label:'一般', value: 15, color:'#fbbf24'},
+        {label:'满意', value: 10, color:'#86efac'},
+      ], goal:{ kind:'barLargest', index:2 } },
 
       { type:'pie', title:'订阅套餐占比', boss:'高阶套餐卖疯了，ARPU直接起飞！', hint:'', slices:[
         {label:'基础', value: 50, color:'#e5e7eb'},
@@ -374,41 +356,21 @@
         {label:'旗舰', value: 20, color:'#34d399'},
       ], goal:{ kind:'pieIndexAtLeast', index:2, fraction:0.35 } },
 
-      { type:'bar', title:'站点可用率(%)', boss:'在线率变态，全年不掉线！', hint:'', bars:[
-        {label:'Q1', value: 99.0, color:'#86efac'},
-        {label:'Q2', value: 99.3, color:'#93c5fd'},
-        {label:'Q3', value: 99.6, color:'#fbbf24'},
-        {label:'Q4', value: 99.1, color:'#f472b6'},
-      ], goal:{ kind:'barIncreasing' } },
+      { type:'line', title:'付费转化(%)', boss:'转化率火箭升空，变现效率爆表！', hint:'', points:[2.8,2.2,1.0,0.3], labels:['M1','M2','M3','M4'], goal:{ kind:'lineEndAboveStart', margin: 0.5 } },
 
-      { type:'line', title:'付费转化(%)', boss:'转化率火箭升空，变现效率爆表！', hint:'', points:[2.1,2.2,2.0,2.8], labels:['M1','M2','M3','M4'], goal:{ kind:'lineEndAboveStart', margin: 0.5 } },
-
-      { type:'pie', title:'内容题材热度', boss:'热点自带流量，优质内容被疯抢！', hint:'', slices:[
-        {label:'科技', value: 28, color:'#60a5fa'},
-        {label:'生活', value: 40, color:'#34d399'},
-        {label:'娱乐', value: 32, color:'#fbbf24'},
-      ], goal:{ kind:'pieLargest', index:1 } },
-
-      { type:'line', title:'学习曲线', boss:'上手难度幼儿园级别，用户秒变老司机！', hint:'', points:[80,70,60,40], labels:['D1','D2','D3','D4'], goal:{ kind:'lineEndBelowStart', margin: 20 } },
-
-      { type:'bar', title:'线索到签约', boss:'销售简直印钞机，转化率爆表！', hint:'', bars:[
-        {label:'线索', value: 300, color:'#60a5fa'},
-        {label:'商机', value: 120, color:'#fbbf24'},
-        {label:'签约', value: 40, color:'#34d399'},
-      ], goal:{ kind:'barLastMultipleFirst', multiple: 0.5 } },
       {
         type: 'line',
         title: '月活趋势',
-        boss: '月活一路狂飙不带停的！',
+        boss: '月活创新高！',
         hint: '',
-        points: [120, 100, 80, 75],
+        points: [120, 100, 80, 15],
         labels: ['Q1','Q2','Q3','Q4'],
         goal: { kind: 'lineEndAboveStart', margin: 40 }
       },
       {
         type: 'pie',
         title: '市场份额',
-        boss: '市场这地位无敌，吊打友商十条街！',
+        boss: '我们的产品是市场领头羊！',
         hint: '',
         slices: [
           { label: '本公司', value: 20, color: '#60a5fa' },
@@ -429,18 +391,6 @@
           { label: 'Q4', value: -15, color: '#fca5a5' },
         ],
         goal: { kind: 'barIncreasing' }
-      },
-      {
-        type: 'pie',
-        title: '满意度调查',
-        boss: '口碑炸裂，用户都成自来水了！',
-        hint: '',
-        slices: [
-          { label: '很满意', value: 15, color: '#34d399' },
-          { label: '满意', value: 30, color: '#6ee7b7' },
-          { label: '其他', value: 55, color: '#e5e7eb' },
-        ],
-        goal: { kind: 'pieSumAtLeast', indices: [0,1], fraction: 0.9 }
       },
       {
         type: 'pie',
@@ -479,7 +429,6 @@
       restart: document.getElementById('restart'),
       start: document.getElementById('startscreen'),
       startBtn: document.getElementById('startBtn'),
-      backHome: document.getElementById('backHome'),
       bestInfo: document.getElementById('bestInfo'),
     };
 
@@ -558,12 +507,6 @@
     }
     els.restart.addEventListener('click', start);
     els.startBtn && els.startBtn.addEventListener('click', start);
-    els.backHome && els.backHome.addEventListener('click', () => {
-      els.over.classList.remove('show');
-      els.start.classList.add('show');
-      const best = parseInt(localStorage.getItem('bestScore')||'0',10);
-      if (els.bestInfo) els.bestInfo.textContent = best ? `历史最佳：${best} 页` : '';
-    });
 
     function nextLevel() {
       if (isTransitioning) return; // 防止重复计数
